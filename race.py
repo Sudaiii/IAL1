@@ -6,6 +6,8 @@ from Players.random_player import RandomPlayer
 from Players.searching_player import SearchingPlayer
 from search import minimax_search, alphabeta_search
 from node import gen_nodes, gen_matrix, print_matrix
+import networkx as nx
+import matplotlib.pyplot as plt
 
 cache = functools.lru_cache(10 ** 6)
 
@@ -16,32 +18,33 @@ depth = 0
 
 class Race(Game):
     def __init__(self, n):
+        self.nodes = []
         self.initial = self.__construct_map(n)
         self.turn = 0
+        
 
     # Construye el estado inicial
-    @staticmethod
-    def __construct_map(n):
+    def __construct_map(self, n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
-        nodes = gen_nodes(n)  # Genera una lista de nodos
+        self.nodes = gen_nodes(n)  # Genera una lista de nodos
         # Se recorre la lista de nodos para buscar las conexiones de los nodos basandose en la matriz de adyacencia
-        for node in nodes:
-            for second_node in nodes:
+        for node in self.nodes:
+            for second_node in self.nodes:
                 if matrix[node.n_id][second_node.n_id] != 0:
                     node.connections.append((second_node, matrix[node.n_id][second_node.n_id]))
         
 
-        print_matrix(nodes, matrix)
+        print_matrix(self.nodes, matrix)
         value_start, value_finish, value_depth = input_data()
         global depth
         depth = value_depth
         
-        nodes[value_start].set_start(True)
+        self.nodes[value_start].set_start(True)
 
-        nodes[value_finish].set_final(True)
+        self.nodes[value_finish].set_final(True)
 
-        plays = [('j1', nodes[0].name)]
-        ini_map = Map(nodes[0], 'j1', 0, dict(j1=0, j2=0), plays)
+        plays = [('j1', self.nodes[0].name)]
+        ini_map = Map(self.nodes[0], 'j1', 0, dict(j1=0, j2=0), plays)
 
         return ini_map
 
@@ -66,6 +69,28 @@ class Race(Game):
 
     def utility(self, state, player):
         return state.utility if player == 'j1' else -state.utility
+    #dibuja el grafo dado un estado
+    def draw_graph(self, state):
+        camino = []
+        for i in state.plays:
+            camino.append(i[1])
+        G = nx.Graph()
+        for node in self.nodes:
+            G.add_node(node.name)
+            for connection in node.connections:
+                G.add_edge(node.name, connection[0].name, weight=connection[1])
+        pos = nx.spring_layout(G)
+        labels = nx.get_edge_attributes(G, 'weight')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+        nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=500, edge_color='black', width=1, alpha=0.7)
+        #alterna los colores de las rutas que tomo cada jugador. Max = Rojo , Min = Azul 
+        for i in range(0,len(camino)-1):
+            if i%2 == 0:
+                nx.draw_networkx_edges(G,pos,edgelist=[(camino[i],camino[i+1])],width=8,alpha=0.5,edge_color='r')
+            else:
+                nx.draw_networkx_edges(G,pos,edgelist=[(camino[i],camino[i+1])],width=8,alpha=0.5,edge_color='b')
+        plt.show()
+        
 
 
 #Entradas de datos con sus respectivas comprobaciones
@@ -116,4 +141,5 @@ def input_data():
 # Main del programa
 game = Race(10) #llama a que la matriz de juego sea de 10x10
 players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
-play_game(game, players, verbose=True)
+state = play_game(game, players, verbose=True)
+game.draw_graph(state)
