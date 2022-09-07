@@ -3,7 +3,7 @@ from game import Game, play_game
 from map import Map
 from Players.random_player import RandomPlayer
 from Players.searching_player import SearchingPlayer
-from search import minimax_search
+from search import minimax_search, alphabeta_search
 from node import gen_nodes, gen_matrix, print_matrix
 
 cache = functools.lru_cache(10 ** 6)
@@ -17,13 +17,6 @@ class Race(Game):
     @staticmethod
     def __construct_map(n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
-        # matrix = [
-        #     [0, 71, 0, 0, 0],
-        #     [71, 0, 0, 20, 55],
-        #     [0, 0, 0, 0, 41],
-        #     [0, 20, 0, 0, 0],
-        #     [0, 55, 41, 0, 0],
-        # ]
         print_matrix(matrix)  # Muestra en pantalla lo que hay en la matriz (para debug)
         nodes = gen_nodes(n)  # Genera una lista de nodos
         # print_nodes(nodes)  # Imprime los valores de los nodos
@@ -65,7 +58,7 @@ class Race(Game):
         return state.utility if player == 'j1' else -state.utility
 
 
-depth = 10
+depth = 5
 game = Race(10)
-players = dict(j1=SearchingPlayer(minimax_search, depth), j2=SearchingPlayer(minimax_search, depth))
+players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
 play_game(game, players, verbose=True)
