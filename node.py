@@ -1,6 +1,6 @@
 import random
 
-
+# Clase que representa una ciudad del mapa de juego
 class Node:
     def __init__(self, name, n_id):  # Constructor
         self.name = name

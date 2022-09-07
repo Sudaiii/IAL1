@@ -1,6 +1,7 @@
 from Players.player import Player
 
-
+# Jugador que escoge jugadas en base a un algoritmo,
+# inspirado por codigo del GitHub del libro Artificial Intelligence: A Modern Approach (games4e.ipynb)
 class SearchingPlayer(Player):
     def __init__(self, algorithm, max_depth):
         super().__init__()

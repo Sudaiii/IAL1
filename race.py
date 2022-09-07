@@ -8,12 +8,14 @@ from node import gen_nodes, gen_matrix, print_matrix
 
 cache = functools.lru_cache(10 ** 6)
 
-
+# El juego implementado
+# Se basa en la interfaz Game
 class Race(Game):
     def __init__(self, n):
         self.initial = self.__construct_map(n)
         self.turn = 0
 
+    # Construye el estawdo inicial
     @staticmethod
     def __construct_map(n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
@@ -58,7 +60,8 @@ class Race(Game):
         return state.utility if player == 'j1' else -state.utility
 
 
-depth = 5
+# Main del programa
+depth = 2
 game = Race(10)
 players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
 play_game(game, players, verbose=True)

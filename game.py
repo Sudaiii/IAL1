@@ -1,3 +1,4 @@
+# Interfaz de un juego sacada del GitHub del libro Artificial Intelligence: A Modern Approach (games4e.ipynb)
 class Game:
     """A game is similar to a problem, but it has a terminal test instead of
     a goal test, and a utility for each terminal state. To create a game,

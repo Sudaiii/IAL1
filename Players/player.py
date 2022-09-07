@@ -1,3 +1,4 @@
+# Interfaz de un jugador cualquiera, sea cual sea su comportamiento
 class Player:
     def __init__(self):
         self.points = 0

@@ -3,6 +3,8 @@ import functools
 cache = functools.lru_cache(10**6)
 infinity = math.inf
 
+# Algoritmos de busqueda minimax y alpha-beta trimming
+# sacados del GitHub del libro Artificial Intelligence: A Modern Approach (games4e.ipynb)
 
 def minimax_search(game, state, max_depth):
     """Search game tree to determine best move; return (value, move) pair."""
