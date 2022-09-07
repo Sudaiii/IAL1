@@ -1,3 +1,4 @@
+# Interfaz de un juego sacada del GitHub del libro Artificial Intelligence: A Modern Approach (games4e.ipynb)
 class Game:
     """A game is similar to a problem, but it has a terminal test instead of
     a goal test, and a utility for each terminal state. To create a game,
@@ -37,4 +38,10 @@ def play_game(game, strategies: dict, verbose=False):
             # print(state)
     print("Puntos j1:", strategies['j1'].points)
     print("Puntos j2:", strategies['j2'].points)
+    if strategies['j1'].points > strategies['j2'].points:
+        print("j1 ha ganado")
+    elif strategies['j1'].points < strategies['j2'].points:
+        print("j2 ha ganado")
+    else:
+        print("Ha ocurrido un empate")
     return state
