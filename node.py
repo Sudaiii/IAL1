@@ -29,21 +29,14 @@ class Node:
 # ===================Nodos=====================
 
 def gen_nodes(n):
-    node_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]  # Se crean 10 nombres de nodes
+    node_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]  # Se crean 10 nombres de nodos
     nodes = []
     for i in range(0, n):
         nodes.append(Node(node_list[i], i))
     return nodes
 
-
-def print_nodes(nodes):
-    for node in nodes:
-        print(node.name + " id: " + str(node.n_id) + " s: " + str(node.start) + " f: "
-              + str(node.final) + " vA: " + str(node.plays))
-
-
 # ====================Matriz =======================
-
+#Genera matriz vacía
 def empty_matrix(n):
     matrix_row = list()
     for i in range(0, n):
@@ -53,7 +46,7 @@ def empty_matrix(n):
         matrix_row.append(matrix_col)
     return matrix_row
 
-
+#Rellena la matriz con valores aleatorios
 def gen_matrix(n):
     matrix = empty_matrix(n)
     for i in range(0, n):
@@ -63,7 +56,7 @@ def gen_matrix(n):
                 matrix[j][i] = matrix[i][j]
     return matrix
 
-
+#Muestra matriz por pantalla
 def print_matrix(nodes, matrix):
     print("==========Matriz generada para la carrera=========")
     print(f"{' ':<3}", end=" ")

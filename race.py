@@ -19,7 +19,7 @@ class Race(Game):
         self.initial = self.__construct_map(n)
         self.turn = 0
 
-    # Construye el estawdo inicial
+    # Construye el estado inicial
     @staticmethod
     def __construct_map(n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
@@ -68,12 +68,10 @@ class Race(Game):
         return state.utility if player == 'j1' else -state.utility
 
 
-
-
-
-
+#Entradas de datos con sus respectivas comprobaciones
 def input_data():
     node_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    #Validacion de entrada nodo inicial
     flag = True
     while flag:
         try:
@@ -84,11 +82,10 @@ def input_data():
             else:
                 flag = False
                 start = node_list.index(txt_start)
-                print(start)
-
         except:
             print("Favor de ingresar una entrada valida\n")
-            
+
+    #Validacion de entrada nodo final       
     flag = True
     while flag:
         try:
@@ -101,11 +98,10 @@ def input_data():
             else:
                 flag = False
                 finish = node_list.index(txt_finish)
-                print(finish)
-
         except:
             print("Favor de ingresar una entrada valida\n")
 
+    #Validacion de entrada profundidad de busqueda
     flag = True
     while flag:
         try:
@@ -118,6 +114,6 @@ def input_data():
 
 
 # Main del programa
-game = Race(10)
+game = Race(10) #llama a que la matriz de juego sea de 10x10
 players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
 play_game(game, players, verbose=True)
