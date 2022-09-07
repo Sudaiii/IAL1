@@ -42,7 +42,7 @@ def print_nodes(nodes):
               + str(node.final) + " vA: " + str(node.plays))
 
 
-# ====================Mat
+# ====================Matriz =======================
 
 def empty_matrix(n):
     matrix_row = list()
@@ -64,22 +64,14 @@ def gen_matrix(n):
     return matrix
 
 
-def print_matrix(matrix):
-    for i in range(0, len(matrix)):
-        print(matrix[i])
-
-
-# n = 5  # tamaño de la matriz
-# matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
-# print_matrix(matrix)  # Muestra en pantalla lo que hay en la matriz (para debug)
-# nodes = gen_nodes(n)  # Genera una lista de nodos
-# print_nodes(nodes)  # Imprime los valores de los nodos
-# for node in nodes:  # Se recorre la lista de nodos para buscar las conexiones de los nodos basandose en la matriz de adyacencia
-#     node.search_connections(matrix)
-#
-# print("Conexiones")
-# for node in nodes:
-#     print("nodo " + node.name + " : ", end="")
-#     print(node.connections)
-#     # En las tuplas el primer valor es el nombre del nodo, el segundo el indice en matriz y el tercero es el peso que cuesta llegar a ese nodo
-#     # (nombre, indice, costo para llegar)
+def print_matrix(nodes, matrix):
+    print("==========Matriz generada para la carrera=========")
+    print(f"{' ':<3}", end=" ")
+    for node in nodes:
+        print(f"{node.name:<3}", end=" ")
+    print()
+    for i in range(0,len(matrix)):
+        print(f"{nodes[i].name:<3}", end=" ")
+        for j in range(0,len(matrix)):
+            print(f"{matrix[i][j]:<3}", end=" ")
+        print()

@@ -1,4 +1,5 @@
 import functools
+from operator import index
 from game import Game, play_game
 from map import Map
 from Players.random_player import RandomPlayer
@@ -10,6 +11,9 @@ cache = functools.lru_cache(10 ** 6)
 
 # El juego implementado
 # Se basa en la interfaz Game
+depth = 0
+
+
 class Race(Game):
     def __init__(self, n):
         self.initial = self.__construct_map(n)
@@ -19,18 +23,22 @@ class Race(Game):
     @staticmethod
     def __construct_map(n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
-        print_matrix(matrix)  # Muestra en pantalla lo que hay en la matriz (para debug)
         nodes = gen_nodes(n)  # Genera una lista de nodos
-        # print_nodes(nodes)  # Imprime los valores de los nodos
         # Se recorre la lista de nodos para buscar las conexiones de los nodos basandose en la matriz de adyacencia
         for node in nodes:
             for second_node in nodes:
                 if matrix[node.n_id][second_node.n_id] != 0:
                     node.connections.append((second_node, matrix[node.n_id][second_node.n_id]))
+        
 
-        nodes[0].set_start(True)
+        print_matrix(nodes, matrix)
+        value_start, value_finish, value_depth = input_data()
+        global depth
+        depth = value_depth
+        
+        nodes[value_start].set_start(True)
 
-        nodes[len(nodes) - 1].set_final(True)
+        nodes[value_finish].set_final(True)
 
         plays = [('j1', nodes[0].name)]
         ini_map = Map(nodes[0], 'j1', 0, dict(j1=0, j2=0), plays)
@@ -60,8 +68,56 @@ class Race(Game):
         return state.utility if player == 'j1' else -state.utility
 
 
+
+
+
+
+def input_data():
+    node_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    flag = True
+    while flag:
+        try:
+            txt_start = input("Ingrese nombre del nodo INICIAL [A-J]: ")
+            txt_start = txt_start.upper()
+            if (len(txt_start) > 1) or (len(txt_start)==0) or (txt_start not in node_list):
+                raise
+            else:
+                flag = False
+                start = node_list.index(txt_start)
+                print(start)
+
+        except:
+            print("Favor de ingresar una entrada valida\n")
+            
+    flag = True
+    while flag:
+        try:
+            txt_finish = input("Ingrese nombre del nodo FINAL [A-J]: ")
+            txt_finish = txt_finish.upper()
+            if (len(txt_finish) > 1) or (len(txt_finish)==0) or (txt_finish not in node_list):
+                raise
+            elif node_list.index(txt_finish) == start:
+                print("El nodo elegido debe ser diferente al nodo de salida\n")
+            else:
+                flag = False
+                finish = node_list.index(txt_finish)
+                print(finish)
+
+        except:
+            print("Favor de ingresar una entrada valida\n")
+
+    flag = True
+    while flag:
+        try:
+           depth_value = int(input("Ingrese nivel máximo a comprobar del arbol para MiniMax [número mayor a 0]: "))
+           if (depth_value>0):
+                flag = False
+        except:
+            print("Favor de ingresar una entrada valida\n")
+    return start, finish, depth_value
+
+
 # Main del programa
-depth = 2
 game = Race(10)
 players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
 play_game(game, players, verbose=True)
