@@ -8,31 +8,31 @@ def minimax_search(game, state, max_depth):
     """Search game tree to determine best move; return (value, move) pair."""
     player = state.to_move
 
-    def max_value(state, last_move):
+    def max_value(state, last_move, turn):
         if game.is_terminal(state):
             return game.utility(state, player), None
-        if state.turn == max_depth:
+        if turn == max_depth:
             return game.utility(state, player), last_move
         v, move = -infinity, None
         for a in game.actions(state):
-            v2, _ = min_value(game.result(state, a), a)
+            v2, _ = min_value(game.result(state, a), a, turn + 1)
             if v2 > v:
                 v, move = v2, a
         return v, move
 
-    def min_value(state, last_move):
+    def min_value(state, last_move, turn):
         if game.is_terminal(state):
             return game.utility(state, player), None
         if state.turn == max_depth:
             return game.utility(state, player), last_move
         v, move = +infinity, None
         for a in game.actions(state):
-            v2, _ = max_value(game.result(state, a), a)
+            v2, _ = max_value(game.result(state, a), a, turn + 1)
             if v2 < v:
                 v, move = v2, a
         return v, move
 
-    return max_value(state, None)
+    return max_value(state, None, 0)
 
 
 def alphabeta_search(game, state, max_depth):
@@ -41,12 +41,14 @@ def alphabeta_search(game, state, max_depth):
 
     player = state.to_move
 
-    def max_value(state, alpha, beta):
+    def max_value(state, alpha, beta, last_move, turn):
         if game.is_terminal(state):
             return game.utility(state, player), None
+        if turn == max_depth:
+            return game.utility(state, player), last_move
         v, move = -infinity, None
         for a in game.actions(state):
-            v2, _ = min_value(game.result(state, a), alpha, beta)
+            v2, _ = min_value(game.result(state, a), alpha, beta, a, turn + 1)
             if v2 > v:
                 v, move = v2, a
                 alpha = max(alpha, v)
@@ -54,12 +56,14 @@ def alphabeta_search(game, state, max_depth):
                 return v, move
         return v, move
 
-    def min_value(state, alpha, beta):
+    def min_value(state, alpha, beta, last_move, turn):
         if game.is_terminal(state):
             return game.utility(state, player), None
+        if turn == max_depth:
+            return game.utility(state, player), last_move
         v, move = +infinity, None
         for a in game.actions(state):
-            v2, _ = max_value(game.result(state, a), alpha, beta)
+            v2, _ = max_value(game.result(state, a), alpha, beta, a, turn + 1)
             if v2 < v:
                 v, move = v2, a
                 beta = min(beta, v)
@@ -67,4 +71,4 @@ def alphabeta_search(game, state, max_depth):
                 return v, move
         return v, move
 
-    return max_value(state, -infinity, +infinity)
+    return max_value(state, -infinity, +infinity, None, 0)
