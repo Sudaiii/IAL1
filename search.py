@@ -1,5 +1,6 @@
 import math
 import functools
+
 cache = functools.lru_cache(10**6)
 infinity = math.inf
 
@@ -41,6 +42,10 @@ def alphabeta_search(game, state, max_depth):
     """Search game to determine best action; use alpha-beta pruning.
     As in [Figure 5.7], this version searches all the way to the leaves."""
 
+    #print cut_offs node if show_pruning is y
+    def print_cut_offs(state, alpha, beta, depth, alpha_beta_pruning):
+        print(alpha_beta_pruning +" CUT-OFFS: ", state, "alpha: ", alpha, "beta: ", beta, "depth: ", depth)
+
     player = state.to_move
 
     def max_value(state, alpha, beta, last_move, turn):
@@ -55,6 +60,8 @@ def alphabeta_search(game, state, max_depth):
                 v, move = v2, a
                 alpha = max(alpha, v)
             if v >= beta:
+                #print_cut_offs de max_value
+                print_cut_offs(state, alpha, beta, turn, "alpha")
                 return v, move
         return v, move
 
@@ -70,6 +77,8 @@ def alphabeta_search(game, state, max_depth):
                 v, move = v2, a
                 beta = min(beta, v)
             if v <= alpha:
+                #print_cut_offs de min_value
+                print_cut_offs(state, alpha, beta, turn, "beta")
                 return v, move
         return v, move
 
