@@ -5,6 +5,7 @@ class Map:
         self.turn = turn
         self.points = points
         self.plays = plays
+        self.utility = 0
 
     def __str__(self):
         return str(self.current_node) + ' ' + str(self.utility) + ' ' + str(self.to_move)
