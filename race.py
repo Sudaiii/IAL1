@@ -22,6 +22,9 @@ class Race(Game):
         self.nodes = []
         self.initial = self.__construct_map(n)
         self.turn = 0
+        self.print_prunings = ""
+        
+
         
 
     # Construye el estado inicial
@@ -36,7 +39,7 @@ class Race(Game):
         
 
         print_matrix(self.nodes, matrix)
-        value_start, value_finish, value_depth,algorithm = input_data()
+        value_start, value_finish, value_depth,algorithm, pruning = input_data()
         global depth
         depth = value_depth
         
@@ -44,7 +47,8 @@ class Race(Game):
         global algorithms
         algorithms = algorithm
 
-        
+        self.print_prunings = pruning
+        print(self.print_prunings)
         self.nodes[value_start].set_start(True)
 
         self.nodes[value_finish].set_final(True)
@@ -96,6 +100,8 @@ class Race(Game):
             else:
                 nx.draw_networkx_edges(G,pos,edgelist=[(camino[i],camino[i+1])],width=8,alpha=0.5,edge_color='b')
         plt.show()
+    
+
         
 
 
@@ -155,8 +161,22 @@ def input_data():
                 algorithm = txt_algorithm
         except:
             print("Favor de ingresar una entrada valida\n")
+    
+    #validacion de entrada para mostrar o no la poda alphabeta
+    flag = True
+    while flag:
+        try:
+            txt_pruning = input("¿Desea mostrar la poda de AlphaBeta? [si, no]: ")
+            txt_pruning = txt_pruning.lower()
+            if (txt_pruning != "si") and (txt_pruning != "no"):
+                raise
+            else:
+                flag = False
+                pruning = txt_pruning
+        except:
+            print("Favor de ingresar una entrada valida\n")
 
-    return start, finish, depth_value, algorithm
+    return start, finish, depth_value, algorithm , pruning
 
 
 # Main del programa

@@ -42,9 +42,10 @@ def alphabeta_search(game, state, max_depth):
     """Search game to determine best action; use alpha-beta pruning.
     As in [Figure 5.7], this version searches all the way to the leaves."""
 
-    #print cut_offs node if show_pruning is y
+    #print cut_offs node if pruning variable is set to true
     def print_cut_offs(state, alpha, beta, depth, alpha_beta_pruning):
-        print(alpha_beta_pruning +" CUT-OFFS: ", state, "alpha: ", alpha, "beta: ", beta, "depth: ", depth)
+        if game.print_prunings == "si":
+            print(alpha_beta_pruning +" CUT-OFFS: ", state, "alpha: ", alpha, "beta: ", beta, "depth: ", depth)
 
     player = state.to_move
 
