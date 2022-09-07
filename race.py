@@ -14,6 +14,7 @@ cache = functools.lru_cache(10 ** 6)
 # El juego implementado
 # Se basa en la interfaz Game
 depth = 0
+algorithms = ""
 
 
 class Race(Game):
@@ -35,9 +36,14 @@ class Race(Game):
         
 
         print_matrix(self.nodes, matrix)
-        value_start, value_finish, value_depth = input_data()
+        value_start, value_finish, value_depth,algorithm = input_data()
         global depth
         depth = value_depth
+        
+        #modify global variable
+        global algorithms
+        algorithms = algorithm
+
         
         self.nodes[value_start].set_start(True)
 
@@ -135,11 +141,31 @@ def input_data():
                 flag = False
         except:
             print("Favor de ingresar una entrada valida\n")
-    return start, finish, depth_value
+
+    #validacion de entrada de algoritmo a usar
+    flag = True
+    while flag:
+        try:
+            txt_algorithm = input("Ingrese algoritmo a usar [minimax, alphabeta]: ")
+            txt_algorithm = txt_algorithm.lower()
+            if (txt_algorithm != "minimax") and (txt_algorithm != "alphabeta"):
+                raise
+            else:
+                flag = False
+                algorithm = txt_algorithm
+        except:
+            print("Favor de ingresar una entrada valida\n")
+
+    return start, finish, depth_value, algorithm
 
 
 # Main del programa
 game = Race(10) #llama a que la matriz de juego sea de 10x10
-players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
+
+if algorithms  == "minimax":
+    players = dict(j1=SearchingPlayer(minimax_search, depth), j2=SearchingPlayer(minimax_search, depth))
+else:
+    players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
+    
 state = play_game(game, players, verbose=True)
 game.draw_graph(state)
