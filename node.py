@@ -1,5 +1,6 @@
 import random
 
+
 # Clase que representa una ciudad del mapa de juego
 class Node:
     def __init__(self, name, n_id):  # Constructor
@@ -36,7 +37,9 @@ def gen_nodes(n):
     return nodes
 
 # ====================Matriz =======================
-#Genera matriz vacía
+
+
+# Genera matriz vacía
 def empty_matrix(n):
     matrix_row = list()
     for i in range(0, n):
@@ -46,7 +49,8 @@ def empty_matrix(n):
         matrix_row.append(matrix_col)
     return matrix_row
 
-#Rellena la matriz con valores aleatorios
+
+# Rellena la matriz con valores aleatorios
 def gen_matrix(n):
     matrix = empty_matrix(n)
     for i in range(0, n):
@@ -56,15 +60,18 @@ def gen_matrix(n):
                 matrix[j][i] = matrix[i][j]
     return matrix
 
-#Muestra matriz por pantalla
+
+# Muestra matriz por pantalla
 def print_matrix(nodes, matrix):
     print("==========Matriz generada para la carrera=========")
     print(f"{' ':<3}", end=" ")
     for node in nodes:
         print(f"{node.name:<3}", end=" ")
     print()
-    for i in range(0,len(matrix)):
+    for i in range(0,
+                   len(matrix)):
         print(f"{nodes[i].name:<3}", end=" ")
-        for j in range(0,len(matrix)):
+        for j in range(0,
+                       len(matrix)):
             print(f"{matrix[i][j]:<3}", end=" ")
         print()

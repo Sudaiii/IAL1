@@ -20,30 +20,26 @@ algorithms = ""
 class Race(Game):
     def __init__(self, n):
         self.nodes = []
+        self.print_prunings = ""
         self.initial = self.__construct_map(n)
         self.turn = 0
-        self.print_prunings = ""
-        
-
-        
 
     # Construye el estado inicial
     def __construct_map(self, n):
         matrix = gen_matrix(n)  # genera la matriz de valores (adyacencia)
         self.nodes = gen_nodes(n)  # Genera una lista de nodos
-        # Se recorre la lista de nodos para buscar las conexiones de los nodos basandose en la matriz de adyacencia
+        # Se recorre la lista de nodos para buscar las conexiones de los nodos basándose en la matriz de adyacencia
         for node in self.nodes:
             for second_node in self.nodes:
                 if matrix[node.n_id][second_node.n_id] != 0:
                     node.connections.append((second_node, matrix[node.n_id][second_node.n_id]))
-        
 
         print_matrix(self.nodes, matrix)
-        value_start, value_finish, value_depth,algorithm, pruning = input_data()
+        value_start, value_finish, value_depth, algorithm, pruning = input_data()
         global depth
         depth = value_depth
         
-        #modify global variable
+        # Modify global variable
         global algorithms
         algorithms = algorithm
 
@@ -79,42 +75,48 @@ class Race(Game):
 
     def utility(self, state, player):
         return state.utility if player == 'j1' else -state.utility
-    #dibuja el grafo dado un estado
+
+    # Dibuja el grafo dado un estado.
+    # Basado en código de networkx.org
     def draw_graph(self, state):
         camino = []
         for i in state.plays:
             camino.append(i[1])
-        G = nx.Graph()
+        g = nx.Graph()
         for node in self.nodes:
-            G.add_node(node.name)
+            g.add_node(node.name)
             for connection in node.connections:
-                G.add_edge(node.name, connection[0].name, weight=connection[1])
-        pos = nx.spring_layout(G)
-        labels = nx.get_edge_attributes(G, 'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-        nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=500, edge_color='black', width=1, alpha=0.7)
-        #alterna los colores de las rutas que tomo cada jugador. Max = Rojo , Min = Azul 
-        for i in range(0,len(camino)-1):
-            if i%2 == 0:
-                nx.draw_networkx_edges(G,pos,edgelist=[(camino[i],camino[i+1])],width=8,alpha=0.5,edge_color='r')
+                g.add_edge(node.name, connection[0].name, weight=connection[1])
+        pos = nx.spring_layout(g)
+        labels = nx.get_edge_attributes(g, 'weight')
+        nx.draw_networkx_edge_labels(g, pos, edge_labels=labels)
+        nx.draw(g, pos, with_labels=True, node_color='skyblue', node_size=500, edge_color='black', width=1, alpha=0.7)
+        # Alterna los colores de las rutas que tomo cada jugador. Max = Rojo , Min = Azul
+        for i in range(0, len(camino)-1):
+            if i % 2 == 0:
+                nx.draw_networkx_edges(g, pos, edgelist=[(camino[i], camino[i+1])], width=8, alpha=0.5, edge_color='r')
             else:
-                nx.draw_networkx_edges(G,pos,edgelist=[(camino[i],camino[i+1])],width=8,alpha=0.5,edge_color='b')
+                nx.draw_networkx_edges(g, pos, edgelist=[(camino[i], camino[i+1])], width=8, alpha=0.5, edge_color='b')
         plt.show()
-    
-
-        
 
 
-#Entradas de datos con sus respectivas comprobaciones
+# Entradas de datos con sus respectivas comprobaciones
 def input_data():
     node_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
-    #Validacion de entrada nodo inicial
+
+    start = node_list[0]
+    finish = node_list[len(node_list)-1]
+    depth_value = 10
+    algorithm = "minimax"
+    pruning = "si"
+
+    # Validación de entrada nodo inicial
     flag = True
     while flag:
         try:
             txt_start = input("Ingrese nombre del nodo INICIAL [A-J]: ")
             txt_start = txt_start.upper()
-            if (len(txt_start) > 1) or (len(txt_start)==0) or (txt_start not in node_list):
+            if (len(txt_start) > 1) or (len(txt_start) == 0) or (txt_start not in node_list):
                 raise
             else:
                 flag = False
@@ -122,13 +124,13 @@ def input_data():
         except:
             print("Favor de ingresar una entrada valida\n")
 
-    #Validacion de entrada nodo final       
+    # Validación de entrada nodo final
     flag = True
     while flag:
         try:
             txt_finish = input("Ingrese nombre del nodo FINAL [A-J]: ")
             txt_finish = txt_finish.upper()
-            if (len(txt_finish) > 1) or (len(txt_finish)==0) or (txt_finish not in node_list):
+            if (len(txt_finish) > 1) or (len(txt_finish) == 0) or (txt_finish not in node_list):
                 raise
             elif node_list.index(txt_finish) == start:
                 print("El nodo elegido debe ser diferente al nodo de salida\n")
@@ -138,33 +140,31 @@ def input_data():
         except:
             print("Favor de ingresar una entrada valida\n")
 
-    #Validacion de entrada profundidad de busqueda
+    # Validación de entrada profundidad de búsqueda
     flag = True
     while flag:
         try:
-           depth_value = int(input("Ingrese nivel máximo a comprobar del arbol para MiniMax [número mayor a 0]: "))
-           if (depth_value>0):
+            depth_value = int(input("Ingrese nivel máximo a comprobar del arbol para MiniMax [número mayor a 0]: "))
+            if depth_value > 0:
                 flag = False
         except:
             print("Favor de ingresar una entrada valida\n")
 
-    #validacion de entrada de algoritmo a usar
+    # Validación de entrada de algoritmo a usar
     flag = True
     while flag:
         try:
             txt_algorithm = input("Ingrese algoritmo a usar [minimax, alphabeta]: ")
             txt_algorithm = txt_algorithm.lower()
-            if (txt_algorithm != "minimax") and (txt_algorithm != "alphabeta"):
-                raise
-            else:
+            if txt_algorithm == "minimax" or txt_algorithm == "alphabeta":
                 flag = False
                 algorithm = txt_algorithm
         except:
             print("Favor de ingresar una entrada valida\n")
-    
-    #validacion de entrada para mostrar o no la poda alphabeta
+
+    # Validación de entrada para mostrar o no la poda alphabeta
     flag = True
-    while flag:
+    while flag and algorithm == "alphabeta":
         try:
             txt_pruning = input("¿Desea mostrar la poda de AlphaBeta? [si, no]: ")
             txt_pruning = txt_pruning.lower()
@@ -176,13 +176,13 @@ def input_data():
         except:
             print("Favor de ingresar una entrada valida\n")
 
-    return start, finish, depth_value, algorithm , pruning
+    return start, finish, depth_value, algorithm, pruning
 
 
 # Main del programa
-game = Race(10) #llama a que la matriz de juego sea de 10x10
+game = Race(10)  # Llama a que la matriz de juego sea de 10x10
 
-if algorithms  == "minimax":
+if algorithms == "minimax":
     players = dict(j1=SearchingPlayer(minimax_search, depth), j2=SearchingPlayer(minimax_search, depth))
 else:
     players = dict(j1=SearchingPlayer(alphabeta_search, depth), j2=SearchingPlayer(alphabeta_search, depth))
